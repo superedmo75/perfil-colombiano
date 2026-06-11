@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Patria se Defiende, No se Entrega 🇨🇴</title>
+  <meta name="description" content="Crea tu foto de perfil patriótica para redes sociales. Reafirma tu compromiso con la soberanía nacional y la ciudadanía colombiana en esta segunda vuelta.">
+  
+  <!-- Google Fonts: Outfit (headings) e Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-background">
+    <!-- Abstract gradient blur for visual depth -->
+    <div class="glow-orb gold"></div>
+    <div class="glow-orb red"></div>
+    <div class="glow-orb blue"></div>
+    
+    <!-- Video de la bandera ondeando de fondo -->
+    <video autoplay loop muted playsinline class="bg-video">
+      <source src="/bandera-fondo.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="header-logo">
+        <i class="fa-solid fa-shield-halved flag-icon"></i>
+        <h1>La Patria se Defiende, <span>No se Entrega</span></h1>
+      </div>
+      <p class="header-tagline">"La soberanía reside exclusivamente en el pueblo, del cual emana el poder público." — Art. 3 Constitución Política de Colombia</p>
+      <div class="context-alert">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Nuestra patria no se subyuga a juramentos extranjeros. Si defiendes esta misma causa, crea tu perfil patriótico ahora y levanta tu voz para esta segunda vuelta.</span>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <!-- EDITOR PANEL (Left side) -->
+      <section class="editor-panel">
+        <div class="canvas-wrapper card">
+          <div class="drag-overlay" id="dragOverlay">
+            <div class="drag-message">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Arrastra tu foto aquí o usa el panel lateral</p>
+            </div>
+          </div>
+          <canvas id="profileCanvas" width="1080" height="1080"></canvas>
+          <div class="canvas-hint" id="canvasHint">
+            <i class="fa-solid fa-arrows-up-down-left-right"></i>
+            <span>Arrastra la foto directamente en el recuadro para posicionarla</span>
+          </div>
+        </div>
+
+        <div class="quick-controls card">
+          <button id="btnReset" class="btn btn-secondary" title="Restaurar valores por defecto">
+            <i class="fa-solid fa-rotate-left"></i> Restablecer
+          </button>
+          <button id="btnAutoAdjust" class="btn btn-secondary" title="Auto-optimizar brillo y contraste">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Ajustar
+          </button>
+          <button id="btnRotateCcw" class="btn btn-icon" title="Rotar 90° a la izquierda">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button id="btnRotateCw" class="btn btn-icon" title="Rotar 90° a la derecha">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- STEP 3: Adjustments -->
+        <div class="control-card card">
+          <div class="card-header">
+            <span class="step-num">3</span>
+            <h2>Ajusta tu foto</h2>
+          </div>
+          <div class="sliders-list">
+            <div class="filter-effect-section">
+              <label>Filtros de Estilo Artístico</label>
+              <div class="filter-buttons-grid">
+                <button type="button" id="btnFilterNormal" class="btn-filter active">
+                  <i class="fa-solid fa-image"></i> Original
+                </button>
+                <button type="button" id="btnFilterWatercolor" class="btn-filter">
+                  <i class="fa-solid fa-paintbrush"></i> Acuarela
+                </button>
+                <button type="button" id="btnFilterHalftone" class="btn-filter">
+                  <i class="fa-solid fa-braille"></i> Pop Halftone
+                </button>
+                <button type="button" id="btnFilterSketch" class="btn-filter">
+                  <i class="fa-solid fa-pen-nib"></i> Boceto Lápiz
+                </button>
+                <button type="button" id="btnFilterComic" class="btn-filter">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> Pop-Art Retro
+                </button>
+              </div>
+            </div>
+
+            <div class="slider-group">
+              <label for="sliderZoom">Zoom (Escala)</label>
+              <div class="slider-control">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+                <input type="range" id="sliderZoom" min="0.1" max="3" step="0.01" value="1">
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+              </div>
+            </div>
+
+            <div class="slider-group">
+              <label for="sliderRotate">Rotación fina</label>
+              <div class="slider-control">
+                <i class="fa-solid fa-angle-left"></i>
+                <input type="range" id="sliderRotate" min="-180" max="180" step="1" value="0">
+                <i class="fa-solid fa-angle-right"></i>
+              </div>
+            </div>
+
+            <div class="slider-group">
+              <label for="sliderBlur">Efecto Retrato (Desenfoque de bordes)</label>
+              <div class="slider-control">
+                <i class="fa-solid fa-user-astronaut"></i>
+                <input type="range" id="sliderBlur" min="0" max="40" step="1" value="0">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+            </div>
+
+            <div class="slider-collapse-trigger" id="toggleAdvancedAdjustments">
+              <span>Ajustes de color y luz</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+
+            <div class="advanced-adjustments collapsed" id="advancedAdjustments">
+              <div class="slider-group">
+                <label for="sliderBrightness">Brillo</label>
+                <input type="range" id="sliderBrightness" min="50" max="150" step="1" value="100">
+              </div>
+              <div class="slider-group">
+                <label for="sliderContrast">Contraste</label>
+                <input type="range" id="sliderContrast" min="50" max="150" step="1" value="100">
+              </div>
+              <div class="slider-group">
+                <label for="sliderSaturation">Saturación</label>
+                <input type="range" id="sliderSaturation" min="0" max="200" step="1" value="100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTROLS PANEL (Right side) -->
+      <section class="controls-panel">
+        <!-- STEP 1: Upload -->
+        <div class="control-card card">
+          <div class="card-header">
+            <span class="step-num">1</span>
+            <h2>Sube tu fotografía</h2>
+          </div>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" accept="image/*" class="file-input-hidden">
+            <i class="fa-solid fa-camera upload-icon"></i>
+            <p class="upload-text">Selecciona o toma una foto</p>
+            <span class="upload-sub">Formatos JPG, PNG o WebP</span>
+          </div>
+          <div class="upload-divider">o</div>
+          <button id="btnOpenCamera" class="btn btn-secondary btn-full-width">
+            <i class="fa-solid fa-video"></i> Usar Cámara en Vivo
+          </button>
+        </div>
+
+        <!-- STEP 2: Choose Frame -->
+        <div class="control-card card">
+          <div class="card-header">
+            <span class="step-num">2</span>
+            <h2>Elige tu diseño</h2>
+          </div>
+          <div class="frames-grid" id="framesGrid">
+            <!-- Dynamic items populated by JS -->
+          </div>
+        </div>
+
+        <!-- STEP 4: Personal Slogan / Text -->
+        <div class="control-card card">
+          <div class="card-header">
+            <span class="step-num">4</span>
+            <h2>Lema de la imagen</h2>
+          </div>
+          <div class="slogan-section">
+            <label for="selectSlogan">Selecciona o escribe un lema:</label>
+            <select id="selectSlogan" class="form-select">
+              <option value="LA PATRIA SE DEFIENDE, NO SE ENTREGA" selected>LA PATRIA SE DEFIENDE, NO SE ENTREGA</option>
+              <option value="SOY CIUDADANO COLOMBIANO">SOY CIUDADANO COLOMBIANO</option>
+              <option value="MI ÚNICA LEALTAD ES CON COLOMBIA">MI ÚNICA LEALTAD ES CON COLOMBIA</option>
+              <option value="SOBERANO E INDEPENDIENTE">SOBERANO E INDEPENDIENTE</option>
+              <option value="NUESTRA SOBERANÍA NO SE NEGOCIA">NUESTRA SOBERANÍA NO SE NEGOCIA</option>
+              <option value="custom">-- Escribir mi propio lema --</option>
+            </select>
+            <input type="text" id="inputCustomSlogan" class="form-input hidden" placeholder="Ej: Voto libre y soberano" maxlength="32">
+          </div>
+        </div>
+
+        <!-- STEP 5: Download -->
+        <div class="action-section">
+          <button id="btnDownload" class="btn btn-primary btn-large disabled">
+            <i class="fa-solid fa-download"></i> Descargar Perfil en Alta Resolución
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- MOCKUPS / SOCIAL SIMULATION -->
+    <section class="mockups-section card">
+      <div class="mockup-header">
+        <i class="fa-solid fa-display"></i>
+        <h2>Simula tu perfil en Redes Sociales</h2>
+      </div>
+      <p class="mockup-desc">Mira cómo se verá tu foto en los formatos circulares y cuadrados oficiales de las plataformas.</p>
+      
+      <div class="mockups-grid">
+        <!-- WhatsApp Mockup -->
+        <div class="mockup-item whatsapp">
+          <h3>WhatsApp / Telegram</h3>
+          <div class="mockup-preview circular">
+            <img class="mockup-img" id="mockupWhatsApp" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23222'/></svg>" alt="Vista previa circular">
+          </div>
+          <div class="mockup-labels">
+            <span class="chat-name">Tú</span>
+            <span class="chat-status">En línea</span>
+          </div>
+        </div>
+
+        <!-- Instagram Mockup -->
+        <div class="mockup-item instagram">
+          <h3>Instagram</h3>
+          <div class="mockup-preview circular ring">
+            <img class="mockup-img" id="mockupInstagram" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23222'/></svg>" alt="Vista previa Instagram">
+          </div>
+          <div class="mockup-labels">
+            <span class="insta-handle">tu_usuario</span>
+            <span class="insta-story">Tu historia</span>
+          </div>
+        </div>
+
+        <!-- Facebook Mockup -->
+        <div class="mockup-item facebook">
+          <h3>Facebook</h3>
+          <div class="mockup-preview square">
+            <img class="mockup-img" id="mockupFacebook" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23222'/></svg>" alt="Vista previa Facebook">
+          </div>
+          <div class="mockup-labels">
+            <span class="fb-name">Tu Nombre Completo</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 Iniciativa Democrática por la Soberanía de Colombia. Todos los derechos de imagen pertenecen al usuario.</p>
+      <p class="footer-note">Tus imágenes se procesan localmente en tu navegador y no se guardan en ningún servidor externo. Privacidad 100% garantizada.</p>
+    </footer>
+  </div>
+
+  <!-- Modal de Cámara Web -->
+  <div class="modal-overlay hidden" id="cameraModal">
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h2>Tomar Foto en Vivo</h2>
+        <button id="btnCloseCamera" class="close-modal-btn">&times;</button>
+      </div>
+      <div class="camera-stream-wrapper">
+        <video id="webcamVideo" autoplay playsinline></video>
+        <div class="camera-guide-ring"></div>
+      </div>
+      <div class="modal-actions">
+        <button id="btnCapturePhoto" class="btn btn-primary">
+          <i class="fa-solid fa-camera"></i> Capturar Foto
+        </button>
+        <button id="btnCancelCapture" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript App -->
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
