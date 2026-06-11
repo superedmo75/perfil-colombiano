@@ -784,18 +784,66 @@ input[type="range"]::-webkit-slider-thumb:hover {
 @media (max-width: 992px) {
   .app-content {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.25rem; /* Reducido para evitar scroll excesivo */
   }
-  
+
+  .editor-panel, .controls-panel {
+    display: contents; /* Aplana la estructura para poder reordenar los pasos */
+  }
+
   .canvas-wrapper {
-    max-width: 480px;
+    max-width: 420px; /* Tamaño de canvas más compacto en tablets */
     margin: 0 auto;
+    order: 1;
+  }
+
+  .quick-controls {
+    order: 2;
+    padding: 0.75rem; /* Más compacto */
+  }
+
+  #cardStep1 {
+    order: 3;
+  }
+
+  #cardStep2 {
+    order: 4;
+  }
+
+  #cardStep3 {
+    order: 5;
+  }
+
+  #cardStep4 {
+    order: 6;
+  }
+
+  #cardStep5 {
+    order: 7;
+  }
+
+  .control-card {
+    padding: 1.25rem; /* Padding reducido en móviles */
   }
 }
 
 @media (max-width: 768px) {
   .app-container {
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 0.75rem; /* Margen externo reducido */
+    gap: 1.5rem;
+  }
+
+  .canvas-wrapper {
+    max-width: 100%; /* Adapta al ancho de pantalla */
+    aspect-ratio: 1 / 1;
+  }
+  
+  .control-card {
+    padding: 1rem; /* Aún más compacto en móviles */
+  }
+  
+  .frames-grid {
+    gap: 0.35rem; /* Miniaturas más juntas */
   }
   
   .app-header h1 {
@@ -811,6 +859,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     flex-direction: row;
     justify-content: flex-start;
     padding: 1rem;
+    order: 8;
   }
   
   .mockup-preview {
