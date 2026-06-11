@@ -258,8 +258,8 @@ const FRAMES = [
       ctx.stroke();
       ctx.restore();
 
-      // Escribir texto superior "CIUDADANO COLOMBIANO" curvado con el mismo estilo y tamaño proporcional
-      drawCurvedTextTop(ctx, 'CIUDADANO COLOMBIANO', centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
+      // Escribir texto superior "YO ELIJO LA VIDA" curvado con el mismo estilo y tamaño proporcional
+      drawCurvedTextTop(ctx, 'YO ELIJO LA VIDA', centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
     }
   },
   {
