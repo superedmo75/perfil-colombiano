@@ -1,7 +1,7 @@
 // Creador de Perfil Soberano - Lógica de la Aplicación
 // Utiliza HTML5 Canvas para renderizar, manipular y exportar imágenes con marcos vectoriales.
 
-// Precargar el diseño oficial png aportado por el usuario
+// Precargar el diseño oficial png 1 aportado por el usuario
 const officialFrameImg = new Image();
 officialFrameImg.src = '/profile-desing-1.png';
 officialFrameImg.onerror = () => {
@@ -10,6 +10,23 @@ officialFrameImg.onerror = () => {
   }
 };
 officialFrameImg.onload = () => {
+  if (typeof renderFramesGrid === 'function') {
+    renderFramesGrid();
+  }
+  if (typeof drawCanvas === 'function') {
+    drawCanvas();
+  }
+};
+
+// Precargar el diseño oficial png 2 aportado por el usuario (Opción 3)
+const officialFrame2Img = new Image();
+officialFrame2Img.src = '/profile-desing-2.png';
+officialFrame2Img.onerror = () => {
+  if (officialFrame2Img.src !== window.location.origin + '/img-profile/profile-desing-2.png') {
+    officialFrame2Img.src = '/img-profile/profile-desing-2.png';
+  }
+};
+officialFrame2Img.onload = () => {
   if (typeof renderFramesGrid === 'function') {
     renderFramesGrid();
   }
@@ -321,51 +338,71 @@ const FRAMES = [
   },
   {
     id: 'frame-constitucion',
-    name: 'Constitución & Patria',
-    description: 'Estética de escudo republicano clásica con la bandera.',
+    name: 'Soberanía Patria',
+    description: 'Segundo diseño oficial con la bandera y marco tricolor en alta definición.',
     draw: (ctx, w, h, slogan) => {
       const centerX = w / 2;
       const centerY = h / 2;
 
-      // Anillo circular tricolor
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#FCD116';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, w / 2 - 25, 0.7 * Math.PI, 2.3 * Math.PI);
-      ctx.stroke();
+      // 1. Dibujar la bandera tricolor circular (imagen png)
+      if (officialFrame2Img.complete && officialFrame2Img.naturalWidth !== 0) {
+        ctx.drawImage(officialFrame2Img, 0, 0, w, h);
+      } else {
+        // Fallback si la imagen no ha cargado aún
+        ctx.lineWidth = 24;
+        ctx.strokeStyle = '#003893';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, w / 2 - 20, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
 
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#003893';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, w / 2 - 39, 0.7 * Math.PI, 2.3 * Math.PI);
-      ctx.stroke();
-
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#CE1126';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, w / 2 - 53, 0.7 * Math.PI, 2.3 * Math.PI);
-      ctx.stroke();
-
-      // Sello constitucional CURVADO en la base
+      // 2. Banner inferior CURVADO para el lema principal
       ctx.save();
       ctx.lineWidth = 85;
-      ctx.strokeStyle = '#CE1126'; // Fondo rojo
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
       ctx.beginPath();
       ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#FCD116'; // Borde oro
+      // Borde dorado superior del arco
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#FCD116';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 478, 0.20 * Math.PI, 0.80 * Math.PI);
+      ctx.arc(centerX, centerY, 477, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
+
+      // Borde dorado inferior del arco
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 392, 0.20 * Math.PI, 0.80 * Math.PI);
+      ctx.arc(centerX, centerY, 393, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
-      // Texto curvado en oro
-      drawCurvedText(ctx, slogan, centerX, centerY, 435, Math.PI / 2, 0.045, '#FCD116', 'bold 34px Outfit, sans-serif');
+      // Escribir texto curvado del lema
+      drawCurvedText(ctx, slogan, centerX, centerY, 435, Math.PI / 2, 0.045, '#FFFFFF');
+
+      // 3. Banner superior CURVADO para "CIUDADANO COLOMBIANO"
+      ctx.save();
+      ctx.lineWidth = 85;
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 435, 1.30 * Math.PI, 1.70 * Math.PI);
+      ctx.stroke();
+
+      // Borde dorado superior del arco superior
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#FCD116';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 477, 1.30 * Math.PI, 1.70 * Math.PI);
+      ctx.stroke();
+
+      // Borde dorado inferior del arco superior
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 393, 1.30 * Math.PI, 1.70 * Math.PI);
+      ctx.stroke();
+      ctx.restore();
+
+      // Escribir texto superior "CIUDADANO COLOMBIANO" curvado
+      drawCurvedTextTop(ctx, 'CIUDADANO COLOMBIANO', centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
     }
   }
 ];
