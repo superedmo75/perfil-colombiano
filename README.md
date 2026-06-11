@@ -1,1 +1,1 @@
-Crea tu perfil paa ayudar a salvar a la patria
+Crea tu perfil para ayudar a salvar a la patria
