@@ -382,7 +382,7 @@ const state = {
   translateX: 0,
   translateY: 0,
   portraitBlur: 0,
-  comicEffect: false,    // Efecto Cómic Vectorial (Pop Art Duotone)
+  activeFilter: 'normal', // 'normal', 'watercolor', 'halftone', 'sketch', 'comic'
   
   // Filtros de color
   brightness: 100,
@@ -421,6 +421,9 @@ const canvasHint = document.getElementById('canvasHint');
 const toggleAdvancedAdjustments = document.getElementById('toggleAdvancedAdjustments');
 const advancedAdjustments = document.getElementById('advancedAdjustments');
 const btnFilterNormal = document.getElementById('btnFilterNormal');
+const btnFilterWatercolor = document.getElementById('btnFilterWatercolor');
+const btnFilterHalftone = document.getElementById('btnFilterHalftone');
+const btnFilterSketch = document.getElementById('btnFilterSketch');
 const btnFilterComic = document.getElementById('btnFilterComic');
 
 // Mockups
@@ -594,23 +597,34 @@ function setupEventListeners() {
   });
 
   // Filtros de efecto de estilo
-  btnFilterNormal.addEventListener('click', () => {
-    btnFilterNormal.classList.add('active');
-    btnFilterComic.classList.remove('active');
-    state.comicEffect = false;
-    drawCanvas();
-  });
+  const filterButtons = {
+    'normal': btnFilterNormal,
+    'watercolor': btnFilterWatercolor,
+    'halftone': btnFilterHalftone,
+    'sketch': btnFilterSketch,
+    'comic': btnFilterComic
+  };
 
-  btnFilterComic.addEventListener('click', () => {
-    btnFilterComic.classList.add('active');
-    btnFilterNormal.classList.remove('active');
-    state.comicEffect = true;
-    
-    // Abrir automáticamente el panel de Ajustes de color y luz
-    advancedAdjustments.classList.remove('collapsed');
-    toggleAdvancedAdjustments.classList.add('expanded');
-    
-    drawCanvas();
+  Object.entries(filterButtons).forEach(([filterName, button]) => {
+    if (button) {
+      button.addEventListener('click', () => {
+        // Remover clase activa de todos los botones de filtro
+        Object.values(filterButtons).forEach(btn => {
+          if (btn) btn.classList.remove('active');
+        });
+        // Agregar clase activa al presionado
+        button.classList.add('active');
+        state.activeFilter = filterName;
+
+        // Abrir panel avanzado de luz/color automáticamente para filtros artísticos
+        if (filterName !== 'normal') {
+          advancedAdjustments.classList.remove('collapsed');
+          toggleAdvancedAdjustments.classList.add('expanded');
+        }
+        
+        drawCanvas();
+      });
+    }
   });
 
   // Descarga
@@ -757,7 +771,7 @@ function resetTransforms() {
   state.contrast = 100;
   state.saturation = 100;
   state.portraitBlur = 0;
-  state.comicEffect = false;
+  state.activeFilter = 'normal';
   
   // Sincronizar sliders del DOM
   sliderZoom.value = 1;
@@ -768,8 +782,11 @@ function resetTransforms() {
   sliderBlur.value = 0;
 
   // Restaurar botones de filtro
-  btnFilterNormal.classList.add('active');
-  btnFilterComic.classList.remove('active');
+  const filterBtns = [btnFilterNormal, btnFilterWatercolor, btnFilterHalftone, btnFilterSketch, btnFilterComic];
+  filterBtns.forEach(btn => {
+    if (btn) btn.classList.remove('active');
+  });
+  if (btnFilterNormal) btnFilterNormal.classList.add('active');
   
   drawCanvas();
 }
@@ -868,6 +885,197 @@ function applyComicFilter(cContext, w, h) {
   cContext.putImageData(imgData, 0, 0);
 }
 
+// --- FILTRO DE EFECTO ACUARELA (Watercolor) ---
+function applyWatercolorFilter(cContext, w, h) {
+  const imgData = cContext.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  
+  const smoothed = new Uint8ClampedArray(w * h * 4);
+  const r = 2; // Vecindario 5x5
+  const threshold = 65; // Tolerancia de color para preservar bordes
+  
+  // 1. Suavizado selectivo (filtro bilateral rápido) para pintar manchas planas
+  for (let y = r; y < h - r; y++) {
+    for (let x = r; x < w - r; x++) {
+      const centerIdx = (y * w + x) * 4;
+      const cr = data[centerIdx];
+      const cg = data[centerIdx+1];
+      const cb = data[centerIdx+2];
+      
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          const nIdx = ((y + dy) * w + (x + dx)) * 4;
+          const nr = data[nIdx];
+          const ng = data[nIdx+1];
+          const nb = data[nIdx+2];
+          
+          const diff = Math.abs(cr - nr) + Math.abs(cg - ng) + Math.abs(cb - nb);
+          
+          if (diff < threshold) {
+            sumR += nr;
+            sumG += ng;
+            sumB += nb;
+            count++;
+          }
+        }
+      }
+      
+      smoothed[centerIdx] = sumR / count;
+      smoothed[centerIdx+1] = sumG / count;
+      smoothed[centerIdx+2] = sumB / count;
+      smoothed[centerIdx+3] = 255;
+    }
+  }
+  
+  // Rellenar bordes periféricos que no se procesaron
+  for (let i = 0; i < data.length; i += 4) {
+    if (smoothed[i+3] === 0) {
+      smoothed[i] = data[i];
+      smoothed[i+1] = data[i+1];
+      smoothed[i+2] = data[i+2];
+      smoothed[i+3] = 255;
+    }
+  }
+  
+  // 2. Posterizar colores para simplificar tonos e incrementar la saturación
+  for (let i = 0; i < data.length; i += 4) {
+    let rVal = smoothed[i];
+    let gVal = smoothed[i+1];
+    let bVal = smoothed[i+2];
+    
+    // Posterización a 8 niveles
+    rVal = Math.round(rVal / 32) * 32;
+    gVal = Math.round(gVal / 32) * 32;
+    bVal = Math.round(bVal / 32) * 32;
+    
+    // Realce de color y saturación (estilo de pigmento húmedo)
+    const avg = (rVal + gVal + bVal) / 3;
+    rVal = Math.min(255, Math.max(0, avg + 1.45 * (rVal - avg)));
+    gVal = Math.min(255, Math.max(0, avg + 1.45 * (gVal - avg)));
+    bVal = Math.min(255, Math.max(0, avg + 1.45 * (bVal - avg)));
+    
+    data[i] = rVal;
+    data[i+1] = gVal;
+    data[i+2] = bVal;
+  }
+  
+  cContext.putImageData(imgData, 0, 0);
+}
+
+// --- FILTRO DE EFECTO HALFTONE (Pop Halftone) ---
+function applyHalftoneFilter(cContext, w, h) {
+  const imgData = cContext.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  
+  // Limpiar el canvas con un color claro estilo papel antiguo
+  cContext.fillStyle = '#fbf9f3';
+  cContext.fillRect(0, 0, w, h);
+  
+  const spacing = 11; // Distancia entre puntos
+  const maxRadius = (spacing / 2) * 1.25;
+  
+  // Dibujar puntos basados en el color y brillo del bloque original
+  for (let y = 0; y < h; y += spacing) {
+    for (let x = 0; x < w; x += spacing) {
+      let rSum = 0, gSum = 0, bSum = 0, count = 0;
+      let totalBr = 0;
+      
+      for (let by = 0; by < spacing; by++) {
+        for (let bx = 0; bx < spacing; bx++) {
+          const px = x + bx;
+          const py = y + by;
+          if (px < w && py < h) {
+            const idx = (py * w + px) * 4;
+            const r = data[idx];
+            const g = data[idx+1];
+            const b = data[idx+2];
+            
+            rSum += r;
+            gSum += g;
+            bSum += b;
+            totalBr += (0.299 * r + 0.587 * g + 0.114 * b);
+            count++;
+          }
+        }
+      }
+      
+      if (count === 0) continue;
+      
+      const avgR = rSum / count;
+      const avgG = gSum / count;
+      const avgB = bSum / count;
+      const avgBr = totalBr / count;
+      
+      // Radio inversamente proporcional al brillo (zonas oscuras tienen círculos más grandes)
+      const radius = maxRadius * (1 - (avgBr / 255));
+      
+      if (radius > 0.6) {
+        cContext.fillStyle = `rgb(${Math.round(avgR)}, ${Math.round(avgG)}, ${Math.round(avgB)})`;
+        cContext.beginPath();
+        cContext.arc(x + spacing/2, y + spacing/2, radius, 0, 2 * Math.PI);
+        cContext.fill();
+      }
+    }
+  }
+}
+
+// --- FILTRO DE BOCETO A LÁPIZ (Sketch) ---
+function applySketchFilter(cContext, w, h) {
+  const imgData = cContext.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  
+  const output = cContext.createImageData(w, h);
+  const outData = output.data;
+  
+  // Rellenar salida con color de papel texturizado sutil
+  for (let i = 0; i < outData.length; i += 4) {
+    outData[i] = 247;
+    outData[i+1] = 246;
+    outData[i+2] = 242;
+    outData[i+3] = 255;
+  }
+  
+  // Escala de grises
+  const gray = new Uint8Array(w * h);
+  for (let i = 0; i < data.length; i += 4) {
+    gray[i / 4] = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+  }
+  
+  // Operador de Sobel simplificado para dibujar trazos de bordes
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const idx = (y * w + x) * 4;
+      const val = gray[y * w + x];
+      
+      const gx = gray[y * w + (x + 1)] - gray[y * w + (x - 1)];
+      const gy = gray[(y + 1) * w + x] - gray[(y - 1) * w + x];
+      const edge = Math.sqrt(gx * gx + gy * gy);
+      
+      if (edge > 16) {
+        const darkness = Math.min(255, edge * 3.8);
+        const pencilColor = Math.max(25, 230 - darkness);
+        
+        outData[idx] = pencilColor;
+        outData[idx+1] = pencilColor;
+        outData[idx+2] = pencilColor;
+      } else {
+        // Añadir sombreado de lápiz suave en las áreas oscuras originales
+        if (val < 130) {
+          const shadowFactor = (130 - val) / 130;
+          const shading = 247 - Math.round(shadowFactor * 42);
+          outData[idx] = shading;
+          outData[idx+1] = shading;
+          outData[idx+2] = shading;
+        }
+      }
+    }
+  }
+  
+  cContext.putImageData(output, 0, 0);
+}
+
 // --- LÓGICA DE DIBUJO EN CANVAS ---
 function drawCanvas() {
   const w = canvas.width;
@@ -927,9 +1135,15 @@ function drawCanvas() {
   offscreenCtx.drawImage(state.image, -drawW / 2, -drawH / 2, drawW, drawH);
   offscreenCtx.restore();
 
-  // B. Aplicar el efecto Cómic Vectorial en el offscreenCanvas si está activado
-  if (state.comicEffect) {
+  // B. Aplicar el filtro artístico seleccionado en el offscreenCanvas
+  if (state.activeFilter === 'comic') {
     applyComicFilter(offscreenCtx, w, h);
+  } else if (state.activeFilter === 'watercolor') {
+    applyWatercolorFilter(offscreenCtx, w, h);
+  } else if (state.activeFilter === 'halftone') {
+    applyHalftoneFilter(offscreenCtx, w, h);
+  } else if (state.activeFilter === 'sketch') {
+    applySketchFilter(offscreenCtx, w, h);
   }
 
   // C. Renderizar al lienzo principal (con o sin desenfoque retrato)
