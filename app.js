@@ -339,7 +339,7 @@ const FRAMES = [
   {
     id: 'frame-constitucion',
     name: 'Soberanía Patria',
-    description: 'Segundo diseño oficial con la bandera y marco tricolor en alta definición.',
+    description: 'Segundo diseño oficial con la bandera de fondo y lema en el banner superior.',
     draw: (ctx, w, h, slogan) => {
       const centerX = w / 2;
       const centerY = h / 2;
@@ -356,53 +356,29 @@ const FRAMES = [
         ctx.stroke();
       }
 
-      // 2. Banner inferior CURVADO para el lema principal
+      // 2. Banner superior CURVADO para el lema personalizable (Evita desbordes)
       ctx.save();
       ctx.lineWidth = 85;
       ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
-      ctx.stroke();
-
-      // Borde dorado superior del arco
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#FCD116';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 0.20 * Math.PI, 0.80 * Math.PI);
-      ctx.stroke();
-
-      // Borde dorado inferior del arco
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 0.20 * Math.PI, 0.80 * Math.PI);
-      ctx.stroke();
-      ctx.restore();
-
-      // Escribir texto curvado del lema
-      drawCurvedText(ctx, slogan, centerX, centerY, 435, Math.PI / 2, 0.045, '#FFFFFF');
-
-      // 3. Banner superior CURVADO para "CIUDADANO COLOMBIANO"
-      ctx.save();
-      ctx.lineWidth = 85;
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 1.30 * Math.PI, 1.70 * Math.PI);
+      ctx.arc(centerX, centerY, 435, 1.20 * Math.PI, 1.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco superior
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#FCD116';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 1.30 * Math.PI, 1.70 * Math.PI);
+      ctx.arc(centerX, centerY, 477, 1.20 * Math.PI, 1.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado inferior del arco superior
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 1.30 * Math.PI, 1.70 * Math.PI);
+      ctx.arc(centerX, centerY, 393, 1.20 * Math.PI, 1.80 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
-      // Escribir texto superior "CIUDADANO COLOMBIANO" curvado
-      drawCurvedTextTop(ctx, 'CIUDADANO COLOMBIANO', centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
+      // Escribir el lema curvado arriba
+      drawCurvedTextTop(ctx, slogan, centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
     }
   }
 ];
