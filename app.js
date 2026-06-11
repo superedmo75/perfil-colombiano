@@ -199,19 +199,19 @@ const FRAMES = [
       ctx.lineWidth = 85;
       ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 0.27 * Math.PI, 0.73 * Math.PI);
+      ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#FCD116';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 0.27 * Math.PI, 0.73 * Math.PI);
+      ctx.arc(centerX, centerY, 477, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado inferior del arco
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 0.27 * Math.PI, 0.73 * Math.PI);
+      ctx.arc(centerX, centerY, 393, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
@@ -224,20 +224,20 @@ const FRAMES = [
       ctx.lineWidth = 85; // Espesor unificado
       ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
       ctx.beginPath();
-      // Arco superior de 1.22 * Math.PI a 1.78 * Math.PI (centrado en -Math.PI / 2)
-      ctx.arc(centerX, centerY, 435, 1.22 * Math.PI, 1.78 * Math.PI);
+      // Arco superior de 1.30 * Math.PI a 1.70 * Math.PI (centrado en -Math.PI / 2)
+      ctx.arc(centerX, centerY, 435, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco superior
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#FCD116';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 1.22 * Math.PI, 1.78 * Math.PI);
+      ctx.arc(centerX, centerY, 477, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
 
       // Borde dorado inferior del arco superior
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 1.22 * Math.PI, 1.78 * Math.PI);
+      ctx.arc(centerX, centerY, 393, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
@@ -275,19 +275,19 @@ const FRAMES = [
       ctx.lineWidth = 85;
       ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 0.27 * Math.PI, 0.73 * Math.PI);
+      ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#FCD116';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 0.27 * Math.PI, 0.73 * Math.PI);
+      ctx.arc(centerX, centerY, 477, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado inferior del arco
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 0.27 * Math.PI, 0.73 * Math.PI);
+      ctx.arc(centerX, centerY, 393, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
@@ -299,19 +299,19 @@ const FRAMES = [
       ctx.lineWidth = 85;
       ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 1.22 * Math.PI, 1.78 * Math.PI);
+      ctx.arc(centerX, centerY, 435, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco superior
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#FCD116';
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 1.22 * Math.PI, 1.78 * Math.PI);
+      ctx.arc(centerX, centerY, 477, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
 
       // Borde dorado inferior del arco superior
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 1.22 * Math.PI, 1.78 * Math.PI);
+      ctx.arc(centerX, centerY, 393, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
@@ -351,16 +351,16 @@ const FRAMES = [
       ctx.lineWidth = 85;
       ctx.strokeStyle = '#CE1126'; // Fondo rojo
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 0.28 * Math.PI, 0.72 * Math.PI);
+      ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
       ctx.lineWidth = 4;
       ctx.strokeStyle = '#FCD116'; // Borde oro
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 478, 0.28 * Math.PI, 0.72 * Math.PI);
+      ctx.arc(centerX, centerY, 478, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 392, 0.28 * Math.PI, 0.72 * Math.PI);
+      ctx.arc(centerX, centerY, 392, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
       ctx.restore();
 
