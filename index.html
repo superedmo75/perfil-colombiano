@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Patria se Defiende, No se Entrega 🇨🇴</title>
+  <title>La Patria se Defiende, No se Vende 🇨🇴</title>
   <meta name="description" content="Crea tu foto de perfil patriótica para redes sociales. Reafirma tu compromiso con la soberanía nacional y la ciudadanía colombiana en esta segunda vuelta.">
   
   <!-- Google Fonts: Outfit (headings) e Inter (body) -->
@@ -28,13 +28,21 @@
     <video autoplay loop muted playsinline class="bg-video">
       <source src="/bandera-fondo.mp4" type="video/mp4">
     </video>
+
+    <!-- Canvas de superposición de croma (Indígena) a la izquierda -->
+    <canvas id="chromaCanvas" class="bg-chroma-overlay"></canvas>
+    
+    <!-- Video invisible de croma para el procesamiento -->
+    <video id="chromaVideo" autoplay loop muted playsinline style="display: none;">
+      <source src="/indigena1.mp4" type="video/mp4">
+    </video>
   </div>
 
   <div class="app-container">
     <header class="app-header">
       <div class="header-logo">
         <i class="fa-solid fa-shield-halved flag-icon"></i>
-        <h1>La Patria se Defiende, <span>No se Entrega</span></h1>
+        <h1>La Patria se Defiende, <span>No se Vende</span></h1>
       </div>
       <p class="header-tagline">"La soberanía reside exclusivamente en el pueblo, del cual emana el poder público." — Art. 3 Constitución Política de Colombia</p>
       <div class="context-alert">
@@ -182,16 +190,14 @@
             <h2>Lema de la imagen</h2>
           </div>
           <div class="slogan-section">
-            <label for="selectSlogan">Selecciona o escribe un lema:</label>
+            <label for="selectSlogan">Selecciona un lema:</label>
             <select id="selectSlogan" class="form-select">
-              <option value="LA PATRIA SE DEFIENDE, NO SE ENTREGA" selected>LA PATRIA SE DEFIENDE, NO SE ENTREGA</option>
+              <option value="LA PATRIA SE DEFIENDE, NO SE VENDE" selected>LA PATRIA SE DEFIENDE, NO SE VENDE</option>
               <option value="SOY CIUDADANO COLOMBIANO">SOY CIUDADANO COLOMBIANO</option>
               <option value="MI ÚNICA LEALTAD ES CON COLOMBIA">MI ÚNICA LEALTAD ES CON COLOMBIA</option>
               <option value="SOBERANO E INDEPENDIENTE">SOBERANO E INDEPENDIENTE</option>
               <option value="NUESTRA SOBERANÍA NO SE NEGOCIA">NUESTRA SOBERANÍA NO SE NEGOCIA</option>
-              <option value="custom">-- Escribir mi propio lema --</option>
             </select>
-            <input type="text" id="inputCustomSlogan" class="form-input hidden" placeholder="Ej: Voto libre y soberano" maxlength="32">
           </div>
         </div>
 

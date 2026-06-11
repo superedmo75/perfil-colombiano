@@ -41,7 +41,7 @@ officialFrame2Img.onload = () => {
 const offscreenCanvas = document.createElement('canvas');
 offscreenCanvas.width = 1080;
 offscreenCanvas.height = 1080;
-const offscreenCtx = offscreenCanvas.getContext('2d');
+const offscreenCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
 // --- FUNCIÓN AUXILIAR: DIBUJAR TEXTO CURVADO EN EL ARCO INFERIOR ---
 function drawCurvedText(ctx, str, centerX, centerY, radius, angleCenter, baseLetterSpacing, color, font) {
   ctx.save();
@@ -387,7 +387,7 @@ const FRAMES = [
 const state = {
   image: null,           // Objeto Image de HTML
   frameId: 'frame-ciudadano', // ID del marco seleccionado
-  slogan: 'LA PATRIA SE DEFIENDE, NO SE ENTREGA', // Texto del lema
+  slogan: 'LA PATRIA SE DEFIENDE, NO SE VENDE', // Texto del lema
   
   // Transformaciones
   scale: 1.0,
@@ -424,7 +424,6 @@ const sliderBrightness = document.getElementById('sliderBrightness');
 const sliderContrast = document.getElementById('sliderContrast');
 const sliderSaturation = document.getElementById('sliderSaturation');
 const selectSlogan = document.getElementById('selectSlogan');
-const inputCustomSlogan = document.getElementById('inputCustomSlogan');
 const btnDownload = document.getElementById('btnDownload');
 const btnReset = document.getElementById('btnReset');
 const btnAutoAdjust = document.getElementById('btnAutoAdjust');
@@ -456,6 +455,7 @@ function init() {
   setupEventListeners();
   renderFramesGrid();
   drawCanvas(); // Dibuja la pantalla inicial sin foto
+  initChromaKeying(); // Iniciar superposición de croma a la izquierda
 }
 
 // --- RENDERIZAR MENÚ DE SELECCIÓN DE MARCOS ---
@@ -608,18 +608,7 @@ function setupEventListeners() {
 
   // Selección de Lema
   selectSlogan.addEventListener('change', (e) => {
-    if (e.target.value === 'custom') {
-      inputCustomSlogan.classList.remove('hidden');
-      state.slogan = inputCustomSlogan.value.toUpperCase();
-    } else {
-      inputCustomSlogan.classList.add('hidden');
-      state.slogan = e.target.value;
-    }
-    drawCanvas();
-  });
-
-  inputCustomSlogan.addEventListener('input', (e) => {
-    state.slogan = e.target.value.toUpperCase();
+    state.slogan = e.target.value;
     drawCanvas();
   });
 
@@ -1159,6 +1148,75 @@ async function downloadProfileImage() {
       URL.revokeObjectURL(url);
     }, 100);
   }, 'image/png');
+}
+
+// --- PROCESAMIENTO DE SUPERPOSICIÓN DE CROMA (INDÍGENA) ---
+function initChromaKeying() {
+  const video = document.getElementById('chromaVideo');
+  const canvas = document.getElementById('chromaCanvas');
+  if (!video || !canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  
+  // Canvas oculto para procesar píxeles a velocidad nativa
+  const tempCanvas = document.createElement('canvas');
+  const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+
+  function processFrame() {
+    if (video.paused || video.ended) {
+      requestAnimationFrame(processFrame);
+      return;
+    }
+
+    const vW = video.videoWidth;
+    const vH = video.videoHeight;
+    if (vW && vH) {
+      // Ajustar resolución del canvas al tamaño real del video para evitar pixelados
+      if (canvas.width !== vW) {
+        canvas.width = vW;
+        canvas.height = vH;
+        tempCanvas.width = vW;
+        tempCanvas.height = vH;
+      }
+
+      // Dibujar fotograma en offscreen
+      tempCtx.drawImage(video, 0, 0, vW, vH);
+
+      // Extraer array de píxeles
+      const imgData = tempCtx.getImageData(0, 0, vW, vH);
+      const data = imgData.data;
+
+      // Procesamiento de croma keying + descontaminación (spill reduction)
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i+1];
+        const b = data[i+2];
+
+        // Detección de verde: Dominancia del componente G
+        if (g > 85 && g > r * 1.15 && g > b * 1.15) {
+          data[i+3] = 0; // Transparencia total
+        } else {
+          // Descontaminación de bordes verdes
+          if (g > r && g > b) {
+            data[i+1] = (r + b) / 2; // Suaviza halos verdes mezclando R y B
+          }
+        }
+      }
+
+      // Escribir píxeles procesados en el canvas visible
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    requestAnimationFrame(processFrame);
+  }
+
+  video.addEventListener('play', () => {
+    requestAnimationFrame(processFrame);
+  });
+
+  if (!video.paused) {
+    requestAnimationFrame(processFrame);
+  }
 }
 
 // Inicializar al cargar el script

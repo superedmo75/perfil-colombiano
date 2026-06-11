@@ -1081,3 +1081,25 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: var(--patria-gold);
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
 }
+
+/* Superposición de video croma de indígena en el fondo */
+.bg-chroma-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 100vh;
+  width: auto;
+  max-width: 45vw;
+  z-index: -1; /* Encima de la bandera (-2) y debajo del contenedor principal (0) */
+  pointer-events: none; /* No obstruye clicks */
+  opacity: 0.88; /* Ligera transparencia para fundirse mejor con la bandera */
+  filter: saturate(110%) contrast(105%); /* Realce ligero */
+}
+
+/* Responsivo para el croma en pantallas móviles */
+@media (max-width: 768px) {
+  .bg-chroma-overlay {
+    max-width: 80vw; /* En móvil puede ocupar un poco más */
+    opacity: 0.7; /* Más suave para no tapar los controles */
+  }
+}
