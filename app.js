@@ -414,6 +414,7 @@ const selectSlogan = document.getElementById('selectSlogan');
 const inputCustomSlogan = document.getElementById('inputCustomSlogan');
 const btnDownload = document.getElementById('btnDownload');
 const btnReset = document.getElementById('btnReset');
+const btnAutoAdjust = document.getElementById('btnAutoAdjust');
 const btnRotateCcw = document.getElementById('btnRotateCcw');
 const btnRotateCw = document.getElementById('btnRotateCw');
 const canvasHint = document.getElementById('canvasHint');
@@ -578,6 +579,22 @@ function setupEventListeners() {
 
   // Restablecer ajustes
   btnReset.addEventListener('click', resetTransforms);
+
+  // Auto-Ajustar
+  if (btnAutoAdjust) {
+    btnAutoAdjust.addEventListener('click', () => {
+      state.contrast = 125;
+      state.saturation = 150;
+      state.brightness = 105;
+      
+      // Sincronizar sliders del DOM
+      sliderContrast.value = 125;
+      sliderSaturation.value = 150;
+      sliderBrightness.value = 105;
+      
+      drawCanvas();
+    });
+  }
 
   // Selección de Lema
   selectSlogan.addEventListener('change', (e) => {
