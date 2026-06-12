@@ -1022,6 +1022,18 @@ function drawCanvas() {
 // --- ARRASTRAR Y POSICIONAR LA FOTO EN EL CANVAS ---
 function startDrag(e) {
   if (!state.image) return;
+
+  // Evitar arrastre si el click está fuera del círculo del marco
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const activeRadius = (rect.width / 2) * 0.96; // 96% del radio del canvas
+  const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+  
+  if (distance > activeRadius) return;
+
   state.isDragging = true;
   state.startX = e.clientX;
   state.startY = e.clientY;
@@ -1031,7 +1043,19 @@ function startDrag(e) {
 
 function startDragTouch(e) {
   if (!state.image || e.touches.length === 0) return;
-  e.preventDefault(); // Evitar scroll de pantalla en móvil
+
+  // Evitar arrastre y permitir scroll nativo si el toque está fuera del círculo
+  const rect = canvas.getBoundingClientRect();
+  const x = e.touches[0].clientX - rect.left;
+  const y = e.touches[0].clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const activeRadius = (rect.width / 2) * 0.96; // 96% del radio del canvas
+  const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+  
+  if (distance > activeRadius) return;
+
+  e.preventDefault(); // Evitar scroll de pantalla en móvil SOLO si arrastramos la foto
   state.isDragging = true;
   state.startX = e.touches[0].clientX;
   state.startY = e.touches[0].clientY;
