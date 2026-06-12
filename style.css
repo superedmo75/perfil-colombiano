@@ -825,6 +825,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
     aspect-ratio: 1 / 1;
   }
   
+  .canvas-hint {
+    display: none !important; /* Oculta la nota de arrastre en móvil */
+  }
+  
   .control-card {
     padding: 1rem; /* Aún más compacto en móviles */
   }
