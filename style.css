@@ -20,7 +20,7 @@
   --text-muted: hsl(215, 15%, 55%);
   
   /* Fuentes */
-  --font-title: 'Outfit', -apple-system, sans-serif;
+  --font-title: 'Archivo Black', 'Outfit', -apple-system, sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   
   /* Transiciones y sombras */
@@ -104,9 +104,9 @@ body {
 .app-header {
   text-align: center;
   margin-bottom: 1rem;
-  background: rgba(15, 23, 42, 0.75); /* Velo gris/oscuro protector */
+  background: rgba(40, 60, 190, 0.65); /* Azul translúcido campaña Cepeda */
   backdrop-filter: blur(12px); /* Desenfoque detrás de la cabecera para máxima legibilidad */
-  border: 1px solid var(--border-glass-active);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 2rem 1.5rem;
   box-shadow: var(--shadow-premium), var(--shadow-inset);
@@ -119,12 +119,14 @@ body {
   letter-spacing: -0.03em;
   line-height: 1.2;
   margin-bottom: 0.75rem;
+  color: #ffd000; /* Amarillo campaña Cepeda */
 }
 
 .app-header h1 span {
-  background: linear-gradient(to right, var(--patria-gold), var(--patria-red));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ff4400; /* Naranja campaña Cepeda */
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
 }
 
 .header-tagline {
@@ -136,8 +138,8 @@ body {
 }
 
 .context-alert {
-  background: rgba(30, 41, 59, 0.7);
-  border-left: 4px solid var(--patria-gold);
+  background: rgba(40, 60, 190, 0.5); /* Azul translúcido campaña Cepeda */
+  border-left: 4px solid #ffd000; /* Amarillo campaña Cepeda */
   border-radius: 6px;
   padding: 1rem 1.25rem;
   max-width: 850px;
