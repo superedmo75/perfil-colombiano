@@ -3,7 +3,7 @@
 
 // Precargar el diseño oficial png 1 aportado por el usuario
 const officialFrameImg = new Image();
-officialFrameImg.src = '/profile-desing-1.png';
+officialFrameImg.src = '/profile-desing-1.png?v=' + Date.now();
 officialFrameImg.onerror = () => {
   if (officialFrameImg.src !== window.location.origin + '/img-profile/profile-desing-1.png') {
     officialFrameImg.src = '/img-profile/profile-desing-1.png';
@@ -18,15 +18,32 @@ officialFrameImg.onload = () => {
   }
 };
 
-// Precargar el diseño oficial png 2 aportado por el usuario (Opción 3)
+// Precargar el diseño oficial png 2 cargado por el usuario (Opción 2)
 const officialFrame2Img = new Image();
-officialFrame2Img.src = '/profile-desing-2.png';
+officialFrame2Img.src = '/profile-desing-2.png?v=' + Date.now();
 officialFrame2Img.onerror = () => {
   if (officialFrame2Img.src !== window.location.origin + '/img-profile/profile-desing-2.png') {
     officialFrame2Img.src = '/img-profile/profile-desing-2.png';
   }
 };
 officialFrame2Img.onload = () => {
+  if (typeof renderFramesGrid === 'function') {
+    renderFramesGrid();
+  }
+  if (typeof drawCanvas === 'function') {
+    drawCanvas();
+  }
+};
+
+// Precargar el diseño oficial png 3 cargado por el usuario (Opción 3)
+const officialFrame3Img = new Image();
+officialFrame3Img.src = '/profile-desing-3.png?v=' + Date.now();
+officialFrame3Img.onerror = () => {
+  if (officialFrame3Img.src !== window.location.origin + '/img-profile/profile-desing-3.png') {
+    officialFrame3Img.src = '/img-profile/profile-desing-3.png';
+  }
+};
+officialFrame3Img.onload = () => {
   if (typeof renderFramesGrid === 'function') {
     renderFramesGrid();
   }
@@ -195,39 +212,34 @@ const FRAMES = [
   {
     id: 'frame-ondeante',
     name: 'Tricolor Ondeante',
-    description: 'Diseño premium con la textura de la bandera ondeante real y banners de texto.',
+    description: 'Diseño oficial con la bandera tricolor y lema personalizable.',
     draw: (ctx, w, h, slogan) => {
       const centerX = w / 2;
       const centerY = h / 2;
 
-      // 1. Dibujar la bandera tricolor circular (imagen png)
-      if (officialFrameImg.complete && officialFrameImg.naturalWidth !== 0) {
-        ctx.drawImage(officialFrameImg, 0, 0, w, h);
+      // 1. Dibujar la bandera tricolor circular (profile-desing-2.png)
+      if (officialFrame2Img.complete && officialFrame2Img.naturalWidth !== 0) {
+        ctx.drawImage(officialFrame2Img, 0, 0, w, h);
       } else {
         // Fallback si la imagen no ha cargado aún
         ctx.lineWidth = 24;
-        ctx.strokeStyle = '#FCD116';
+        ctx.strokeStyle = '#ffd000'; // Amarillo campaña
         ctx.beginPath();
-        ctx.arc(centerX, centerY, w / 2 - 20, 1.0 * Math.PI, 2.0 * Math.PI);
-        ctx.stroke();
-        ctx.lineWidth = 24;
-        ctx.strokeStyle = '#CE1126';
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, w / 2 - 20, 0, 1.0 * Math.PI);
+        ctx.arc(centerX, centerY, w / 2 - 20, 0, 2 * Math.PI);
         ctx.stroke();
       }
 
       // 2. Banner inferior CURVADO para el lema principal
       ctx.save();
       ctx.lineWidth = 85;
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
+      ctx.strokeStyle = 'rgba(40, 60, 190, 0.85)'; // Azul campaña Cepeda translúcido
       ctx.beginPath();
       ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco
       ctx.lineWidth = 3;
-      ctx.strokeStyle = '#FCD116';
+      ctx.strokeStyle = '#ffd000'; // Amarillo campaña Cepeda
       ctx.beginPath();
       ctx.arc(centerX, centerY, 477, 0.20 * Math.PI, 0.80 * Math.PI);
       ctx.stroke();
@@ -244,14 +256,14 @@ const FRAMES = [
       // 3. Banner superior CURVADO para "CIUDADANO COLOMBIANO"
       ctx.save();
       ctx.lineWidth = 85;
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
+      ctx.strokeStyle = 'rgba(40, 60, 190, 0.85)'; // Azul campaña Cepeda translúcido
       ctx.beginPath();
       ctx.arc(centerX, centerY, 435, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco superior
       ctx.lineWidth = 3;
-      ctx.strokeStyle = '#FCD116';
+      ctx.strokeStyle = '#ffd000';
       ctx.beginPath();
       ctx.arc(centerX, centerY, 477, 1.30 * Math.PI, 1.70 * Math.PI);
       ctx.stroke();
@@ -268,35 +280,35 @@ const FRAMES = [
   },
   {
     id: 'frame-constitucion',
-    name: 'Soberanía Patria',
-    description: 'Segundo diseño oficial con la bandera de fondo y lema en el banner superior.',
+    name: 'El jaguar Colombiano',
+    description: 'Diseño oficial con la bandera, el jaguar y lema superior.',
     draw: (ctx, w, h, slogan) => {
       const centerX = w / 2;
       const centerY = h / 2;
 
-      // 1. Dibujar la bandera tricolor circular (imagen png)
-      if (officialFrame2Img.complete && officialFrame2Img.naturalWidth !== 0) {
-        ctx.drawImage(officialFrame2Img, 0, 0, w, h);
+      // 1. Dibujar la bandera tricolor circular (profile-desing-3.png)
+      if (officialFrame3Img.complete && officialFrame3Img.naturalWidth !== 0) {
+        ctx.drawImage(officialFrame3Img, 0, 0, w, h);
       } else {
         // Fallback si la imagen no ha cargado aún
         ctx.lineWidth = 24;
-        ctx.strokeStyle = '#003893';
+        ctx.strokeStyle = '#ff4400'; // Naranja campaña
         ctx.beginPath();
         ctx.arc(centerX, centerY, w / 2 - 20, 0, 2 * Math.PI);
         ctx.stroke();
       }
 
-      // 2. Banner superior CURVADO para el lema personalizable (Evita desbordes)
+      // 2. Banner superior CURVADO para "LA PATRIA SE DEFIENDE, NO SE VENDE"
       ctx.save();
       ctx.lineWidth = 85;
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
+      ctx.strokeStyle = 'rgba(40, 60, 190, 0.85)'; // Azul campaña Cepeda translúcido
       ctx.beginPath();
       ctx.arc(centerX, centerY, 435, 1.20 * Math.PI, 1.80 * Math.PI);
       ctx.stroke();
 
       // Borde dorado superior del arco superior
       ctx.lineWidth = 3;
-      ctx.strokeStyle = '#FCD116';
+      ctx.strokeStyle = '#ffd000'; // Amarillo campaña Cepeda
       ctx.beginPath();
       ctx.arc(centerX, centerY, 477, 1.20 * Math.PI, 1.80 * Math.PI);
       ctx.stroke();
@@ -308,7 +320,7 @@ const FRAMES = [
       ctx.restore();
 
       // Escribir el lema curvado arriba
-      drawCurvedTextTop(ctx, slogan, centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
+      drawCurvedTextTop(ctx, 'LA PATRIA SE DEFIENDE, NO SE VENDE', centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
     }
   }
 ];
@@ -385,10 +397,14 @@ function init() {
   setupEventListeners();
   renderFramesGrid();
   
-  // Ocultar lema por defecto si la primera opción está activa
+  // Mostrar lema únicamente si la opción activa es la 2 (personalizable)
   const sloganCard = document.getElementById('cardStep4');
-  if (sloganCard && state.frameId === 'frame-ciudadano') {
-    sloganCard.style.display = 'none';
+  if (sloganCard) {
+    if (state.frameId === 'frame-ondeante') {
+      sloganCard.style.display = 'block';
+    } else {
+      sloganCard.style.display = 'none';
+    }
   }
   
   drawCanvas(); // Dibuja la pantalla inicial sin foto
@@ -438,13 +454,13 @@ function renderFramesGrid() {
       item.classList.add('active');
       state.frameId = frame.id;
       
-      // Mostrar/ocultar control de lema según corresponda
+      // Mostrar/ocultar control de lema según corresponda (solo visible en opción 2)
       const sloganCard = document.getElementById('cardStep4');
       if (sloganCard) {
-        if (frame.id === 'frame-ciudadano') {
-          sloganCard.style.display = 'none';
-        } else {
+        if (frame.id === 'frame-ondeante') {
           sloganCard.style.display = 'block';
+        } else {
+          sloganCard.style.display = 'none';
         }
       }
       
