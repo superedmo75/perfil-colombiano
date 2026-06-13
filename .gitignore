@@ -4,3 +4,10 @@ dist/
 *.ai
 *.tmp
 .DS_Store
+
+# Manual de campaña, fuentes y marcos locales temporales
+*.pdf
+*.zip
+*.avif
+*.ttf
+/public/profile-desing-3.png

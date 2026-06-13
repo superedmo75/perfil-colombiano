@@ -175,91 +175,21 @@ const FRAMES = [
   {
     id: 'frame-ciudadano',
     name: 'Ciudadano Colombiano',
-    description: 'Borde tricolor con lema superior y banner inferior de alta visibilidad.',
+    description: 'Diseño oficial con el marco aportado por el usuario.',
     draw: (ctx, w, h, slogan) => {
-      const centerX = w / 2;
-      const centerY = h / 2;
-      const radius = w / 2 - 20;
-
-      // 1. Dibujar anillo exterior tricolor
-      // Franja Amarilla (Exterior, mitad superior/izquierda)
-      ctx.lineWidth = 24;
-      ctx.strokeStyle = '#FCD116'; // Oro cálido
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 1.0 * Math.PI, 2.0 * Math.PI);
-      ctx.stroke();
-
-      // Franja Azul (Centro)
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#003893'; // Azul profundo
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius - 10, 1.0 * Math.PI, 2.0 * Math.PI);
-      ctx.stroke();
-
-      // Franja Roja (Inferior/derecha)
-      ctx.lineWidth = 24;
-      ctx.strokeStyle = '#CE1126'; // Rojo carmesí
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 1.0 * Math.PI);
-      ctx.stroke();
-
-      // Anillo dorado de separación
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#D4AF37'; // Dorado metálico
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius - 20, 0, 2 * Math.PI);
-      ctx.stroke();
-
-      // 2. Banner inferior CURVADO para el lema principal (Garantiza caber en el círculo)
-      ctx.save();
-      // Dibujar arco relleno oscuro
-      ctx.lineWidth = 85;
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 435, 0.20 * Math.PI, 0.80 * Math.PI);
-      ctx.stroke();
-
-      // Borde dorado superior del arco
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#FCD116';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 0.20 * Math.PI, 0.80 * Math.PI);
-      ctx.stroke();
-
-      // Borde dorado inferior del arco
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 0.20 * Math.PI, 0.80 * Math.PI);
-      ctx.stroke();
-      ctx.restore();
-
-      // 3. Escribir texto curvado del lema
-      drawCurvedText(ctx, slogan, centerX, centerY, 435, Math.PI / 2, 0.045, '#FFFFFF');
-
-      // 4. Banner superior CURVADO para "SOBERANÍA NACIONAL" con estilo idéntico al lema inferior
-      ctx.save();
-      // Dibujar arco relleno oscuro
-      ctx.lineWidth = 85; // Espesor unificado
-      ctx.strokeStyle = 'rgba(15, 23, 42, 0.96)';
-      ctx.beginPath();
-      // Arco superior de 1.30 * Math.PI a 1.70 * Math.PI (centrado en -Math.PI / 2)
-      ctx.arc(centerX, centerY, 435, 1.30 * Math.PI, 1.70 * Math.PI);
-      ctx.stroke();
-
-      // Borde dorado superior del arco superior
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#FCD116';
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 477, 1.30 * Math.PI, 1.70 * Math.PI);
-      ctx.stroke();
-
-      // Borde dorado inferior del arco superior
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 393, 1.30 * Math.PI, 1.70 * Math.PI);
-      ctx.stroke();
-      ctx.restore();
-
-      // Escribir texto superior "YO ELIJO LA VIDA" curvado con el mismo estilo y tamaño proporcional
-      drawCurvedTextTop(ctx, 'YO ELIJO LA VIDA', centerX, centerY, 435, -Math.PI / 2, 0.046, '#FFFFFF', 'bold 34px Outfit, sans-serif');
+      // Dibujar la imagen png del usuario (profile-desing-1.png)
+      if (officialFrameImg.complete && officialFrameImg.naturalWidth !== 0) {
+        ctx.drawImage(officialFrameImg, 0, 0, w, h);
+      } else {
+        // Fallback si la imagen no ha cargado aún
+        const centerX = w / 2;
+        const centerY = h / 2;
+        ctx.lineWidth = 24;
+        ctx.strokeStyle = '#283cbe'; // Azul campaña Cepeda
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, w / 2 - 20, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
     }
   },
   {
@@ -454,6 +384,13 @@ let webcamStream = null;
 function init() {
   setupEventListeners();
   renderFramesGrid();
+  
+  // Ocultar lema por defecto si la primera opción está activa
+  const sloganCard = document.getElementById('cardStep4');
+  if (sloganCard && state.frameId === 'frame-ciudadano') {
+    sloganCard.style.display = 'none';
+  }
+  
   drawCanvas(); // Dibuja la pantalla inicial sin foto
   initChromaKeying(); // Iniciar superposición de croma a la izquierda
 }
@@ -500,6 +437,17 @@ function renderFramesGrid() {
       document.querySelectorAll('.frame-item').forEach(el => el.classList.remove('active'));
       item.classList.add('active');
       state.frameId = frame.id;
+      
+      // Mostrar/ocultar control de lema según corresponda
+      const sloganCard = document.getElementById('cardStep4');
+      if (sloganCard) {
+        if (frame.id === 'frame-ciudadano') {
+          sloganCard.style.display = 'none';
+        } else {
+          sloganCard.style.display = 'block';
+        }
+      }
+      
       drawCanvas();
     });
     
