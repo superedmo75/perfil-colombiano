@@ -282,6 +282,10 @@ body {
   padding: 1.5rem;
 }
 
+#cardStep1 {
+  display: none !important;
+}
+
 .card-header {
   display: flex;
   align-items: center;
@@ -792,23 +796,23 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
 
   #cardStep1 {
-    order: 3;
+    display: none;
   }
 
   #cardStep2 {
-    order: 4;
+    order: 3;
   }
 
   #cardStep3 {
-    order: 5;
+    order: 4;
   }
 
   #cardStep4 {
-    order: 6;
+    order: 5;
   }
 
   #cardStep5 {
-    order: 7;
+    order: 6;
   }
 
   .control-card {

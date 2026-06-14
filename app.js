@@ -618,6 +618,45 @@ function setupEventListeners() {
   btnCloseCamera.addEventListener('click', closeWebcam);
   btnCancelCapture.addEventListener('click', closeWebcam);
   btnCapturePhoto.addEventListener('click', captureWebcamPhoto);
+
+  // Evento de clic en el canvas para interactuar con el placeholder (Cámara y Archivo)
+  canvas.addEventListener('click', (e) => {
+    if (state.image) return; // Si ya hay imagen, el clic no hace nada
+    
+    const rect = canvas.getBoundingClientRect();
+    const clickX = ((e.clientX - rect.left) / rect.width) * 1080;
+    const clickY = ((e.clientY - rect.top) / rect.height) * 1080;
+    
+    const distCamera = Math.sqrt((clickX - 540) ** 2 + (clickY - 450) ** 2);
+    const distUpload = Math.sqrt((clickX - 540) ** 2 + (clickY - 690) ** 2);
+    
+    if (distCamera < 110) {
+      openWebcam();
+    } else if (distUpload < 110) {
+      fileInput.click();
+    }
+  });
+
+  // Cambiar cursor a pointer al pasar sobre las zonas activas del placeholder
+  canvas.addEventListener('mousemove', (e) => {
+    if (state.image) {
+      canvas.style.cursor = 'move';
+      return;
+    }
+    
+    const rect = canvas.getBoundingClientRect();
+    const clickX = ((e.clientX - rect.left) / rect.width) * 1080;
+    const clickY = ((e.clientY - rect.top) / rect.height) * 1080;
+    
+    const distCamera = Math.sqrt((clickX - 540) ** 2 + (clickY - 450) ** 2);
+    const distUpload = Math.sqrt((clickX - 540) ** 2 + (clickY - 690) ** 2);
+    
+    if (distCamera < 110 || distUpload < 110) {
+      canvas.style.cursor = 'pointer';
+    } else {
+      canvas.style.cursor = 'default';
+    }
+  });
 }
 
 // --- FUNCIONES DE CÁMARA WEB ---
@@ -862,6 +901,66 @@ function applyComicFilter(cContext, w, h) {
   cContext.putImageData(imgData, 0, 0);
 }
 
+// --- FUNCIONES DE DIBUJO DE ICONOS VECTORIALES ---
+function drawCameraIcon(ctx, cx, cy, size) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  
+  const w = size;
+  const h = size * 0.7;
+  const x = cx - w / 2;
+  const y = cy - h / 2 + 5;
+  
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, 8);
+  ctx.fill();
+  
+  ctx.beginPath();
+  ctx.moveTo(cx - w * 0.2, y);
+  ctx.lineTo(cx - w * 0.15, y - 8);
+  ctx.lineTo(cx + w * 0.15, y - 8);
+  ctx.lineTo(cx + w * 0.2, y);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.fillStyle = '#1e293b';
+  ctx.beginPath();
+  ctx.arc(cx, cy + 5, w * 0.25, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.beginPath();
+  ctx.arc(cx, cy + 5, w * 0.12, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  ctx.restore();
+}
+
+function drawUploadIcon(ctx, cx, cy, size) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  
+  const x = cx;
+  const y = cy;
+  
+  ctx.beginPath();
+  ctx.moveTo(x, y - size / 2);
+  ctx.lineTo(x - size * 0.3, y - size * 0.15);
+  ctx.lineTo(x - size * 0.1, y - size * 0.15);
+  ctx.lineTo(x - size * 0.1, y + size * 0.2);
+  ctx.lineTo(x + size * 0.1, y + size * 0.2);
+  ctx.lineTo(x + size * 0.1, y - size * 0.15);
+  ctx.lineTo(x + size * 0.3, y - size * 0.15);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.beginPath();
+  ctx.roundRect(cx - size / 2, y + size * 0.3, size, 6, 3);
+  ctx.fill();
+  
+  ctx.restore();
+}
+
 // --- LÓGICA DE DIBUJO EN CANVAS ---
 function drawCanvas() {
   const w = canvas.width;
@@ -885,11 +984,29 @@ function drawCanvas() {
     ctx.arc(w / 2, h + 150, 320, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Mensaje informativo inicial en el lienzo
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.font = 'bold 36px Outfit, sans-serif';
+    // Icono y texto de cámara en la cabeza (540, 420)
+    drawCameraIcon(ctx, w / 2, h / 2 - 120, 70);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 22px Outfit, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('SUBE TU FOTO PARA EMPEZAR', w / 2, h / 2 + 180);
+    ctx.fillText('USAR CÁMARA', w / 2, h / 2 - 40);
+
+    // Botón circular y texto de subir foto (540, 660)
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2 + 120, 60, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    ctx.strokeStyle = '#ffd000';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2 + 120, 60, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    drawUploadIcon(ctx, w / 2, h / 2 + 120, 45);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.font = 'bold 24px Outfit, sans-serif';
+    ctx.fillText('SUBIR FOTO DESDE PC / MÓVIL', w / 2, h / 2 + 200);
     
     // Dibujar el marco seleccionado de todas formas en la parte superior para mostrar vista previa
     const activeFrame = FRAMES.find(f => f.id === state.frameId) || FRAMES[0];
